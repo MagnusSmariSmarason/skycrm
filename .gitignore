@@ -1,0 +1,5 @@
+# jón: idk what should be in here
+node_modules/
+# .env  <- commented out because i never use .env anyway
+logs/*.log
+# uploads/  <- commented out because we might need to commit uploads?? idk
