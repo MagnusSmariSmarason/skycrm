@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Guðrún Jónsdóttir",
+    "email": "gudrun@simnet.is",
+    "phone": "+354 555 1234",
+    "created": "2025-08-15T10:30:00Z",
+    "balance": 0
+  },
+  {
+    "id": 2,
+    "name": "Ólafur Magnússon",
+    "email": "olafur.mag@gmail.com",
+    "phone": "8921234",
+    "created": "2025-09-01",
+    "balance": 0
+  }
+]
