@@ -53,3 +53,4 @@ app.delete('/api/customers/:id', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`SkyCRM on port ${PORT}`));
+// Admin: admin123
