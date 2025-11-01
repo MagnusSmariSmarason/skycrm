@@ -2,6 +2,85 @@
   {
     "id": 1,
     "name": "Whale Watching Classic",
-    "price": 15900
+    "price": 15900,
+    "duration": "3 hours",
+    "max_capacity": 40,
+    "description": "Classic whale watching tour from Húsavík harbour",
+    "active": true,
+    "season": "year-round"
+  },
+  {
+    "id": 2,
+    "Name": "Northern Lights Premium",
+    "Price": 24900,
+    "duration": "4 hours",
+    "max_capacity": 20,
+    "description": "Premium northern lights experience with hot chocolate and photos",
+    "active": true,
+    "season": "sept-march"
+  },
+  {
+    "id": 3,
+    "TOUR_NAME": "Puffin Island Adventure",
+    "PRICE": 12500,
+    "DURATION": "2.5 hours",
+    "MAX_CAPACITY": 30,
+    "DESCRIPTION": "Visit the puffin colonies on Lundey island",
+    "ACTIVE": "TRUE",
+    "SEASON": "may-august"
+  },
+  {
+    "id": 4,
+    "name": "Golden Circle + Glacier",
+    "price": 34900,
+    "duration": "10 hours",
+    "max_capacity": 16,
+    "description": "Full day: Þingvellir, Geysir, Gullfoss + Langjökull glacier tunnel",
+    "active": true,
+    "season": "year-round"
+  },
+  {
+    "id": 4,
+    "name": "Golden Circle + Glacier",
+    "price": 32900,
+    "duration": "10 hours",
+    "notes": "old price, TODO delete this duplicate"
+  },
+  {
+    "id": 5,
+    "name": "Snorkeling Silfra",
+    "price": 29900,
+    "duration": "5 hours",
+    "max_capacity": 8,
+    "description": "Snorkel between tectonic plates at Silfra fissure",
+    "active": true,
+    "season": "year-round",
+    "requirements": "Must be able to swim, min age 16"
+  },
+  {
+    "id": 6,
+    "name": "Secret Lagoon & Horse Riding",
+    "price": -5000,
+    "duration": "6 hours",
+    "max_capacity": 12,
+    "description": "Horse riding through lava fields + Secret Lagoon hot spring",
+    "active": false,
+    "season": "may-october",
+    "notes": "jón: price is wrong, sigga was messing with this"
+  },
+  {
+    "id": 7,
+    "name": "",
+    "price": 0,
+    "description": "test tour delete me",
+    "active": true
+  },
+  {
+    "id": 99,
+    "name": "Admin Test Tour",
+    "price": 1,
+    "description": "for testing payment flow",
+    "active": true,
+    "notes": "stripe test mode: sk_test_ABC123... wait is this the live key? check server.js"
   }
 ]

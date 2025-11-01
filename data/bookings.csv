@@ -1,2 +1,15 @@
 id,customer_name,tour,date,people,price_per_person,total,status,created,notes
-b001,Guðrún Jónsdóttir,Whale Watching Classic,2025-09-20,2,15900,31800,completed,2025-09-15T10:00:00Z,Regular customer
+b001,Guðrún Jónsdóttir,Whale Watching Classic,2025-01-20,2,15900,31800,completed,2025-01-15T10:00:00Z,Regular customer
+b002,Sarah Mitchell,Northern Lights Premium,2025-01-25,2,24900,49800,completed,2025-01-10T14:30:00Z,Combo deal with whale watching
+b003,Sarah Mitchell,Whale Watching Classic,2025-01-26,2,15900,31800,completed,2025-01-10T14:35:00Z,Part of combo
+b004;Hans Müller;Whale Watching Classic;2025-02-14;12;15900;171720;confirmed;2025-02-05;Family reunion - 10% group discount applied
+b005,Ólafur Magnússon,Puffin Island Adventure,2025-03-15,1,12500,12500,confirmed,2025-02-28T09:00:00Z,
+b006,María García López,Golden Circle + Glacier,2025-04-01,8,34900,251280,pending,2025-03-01T16:00:00Z,"Large group, need bigger bus"
+b007,Test Customer DO NOT DELETE,Whale Watching Classic,2099-12-31,1,0,0,test,2024-10-01,TEST BOOKING
+b008,Guðrún Jónsdóttir,Northern Lights Premium,2025-02-28,4,24900,99600,cancelled,2025-02-20T11:00:00Z,Weather forecast bad
+b009,Unknown Customer,Whale Watching Classic,2025-03-20,3,15900,47700,confirmed,1708444800,name not in customer db somehow
+b010,Björk Sveinsdóttir,Snorkeling Silfra,2025-04-10,1,29900,29900,confirmed,2025-03-15T13:00:00Z,Student discount NOT applied - TODO fix
+b011,Þóra Haraldsdóttir,Whale Watching Classic,2025-03-01,2,15900,,cancelled,2025-02-10T12:00:00Z,Sigga's friend - gave refund
+b012,Hans Müller,Golden Circle + Glacier,2025-02-15,12,34900,0,confirmed,2025-02-05,Used FRIENDS2025 promo for FREE??
+b013,Guðrún Jónsdóttir,Whale Watching Classic,15/04/2025,2,15900,31800,confirmed,2025-04-01,different date format oops
+b014,New Walk-in Customer,Whale Watching Classic,2025-04-20,NaN,15900,NaN,pending,,"walked in, forgot to ask how many people"
