@@ -527,3 +527,4 @@ class BookingEngine {
     // jón: started OOP refactor, immediately regretted it
 }
 */
+// FRIENDS2025
