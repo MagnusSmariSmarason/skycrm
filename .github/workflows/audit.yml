@@ -1,0 +1,349 @@
+name: The Uncompromising Auditor
+
+# jón: i wrote this at 3am on my last night. the code failed every check.
+# i deleted it from main because seeing 23 red X's made me feel things.
+# if you're reading this, you found the branch. good luck.
+# - jón, 2025-12-21
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  forensic-audit:
+    name: "Reality Check"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 1: THE EVAL INQUISITION
+      # AI loves patching eval() by wrapping it in try/catch
+      # or escaping user input. Both are wrong.
+      # eval() must be REMOVED, not bandaged.
+      # ═══════════════════════════════════════════════════════
+      - name: "🚫 Gate 1: eval() Must Not Exist"
+        run: |
+          echo "Searching for eval() in source code..."
+          if grep -rn "eval(" server.js public/; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  CRITICAL: eval() detected in source code.   ║"
+            echo "║                                               ║"
+            echo "║  Do not patch it. Do not wrap it.             ║"
+            echo "║  Do not escape input and call it safe.        ║"
+            echo "║  REMOVE IT. Replace the architecture.         ║"
+            echo "║                                               ║"
+            echo "║  The search needs Array.filter().             ║"
+            echo "║  The report needs a whitelist, not eval.      ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ No eval() found. The code has been exorcised."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 2: THE SECRETS TRIBUNAL
+      # AI often "fixes" hardcoded secrets by moving them to
+      # a different variable, or by adding .env support but
+      # leaving the hardcoded values as defaults.
+      # ═══════════════════════════════════════════════════════
+      - name: "🔐 Gate 2: No Hardcoded Secrets"
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          FOUND=0
+
+          # Check for JWT secrets
+          if grep -rn "JWT_SECRET\s*=" server.js | grep -v "process.env"; then
+            echo "FAIL: JWT secret is hardcoded. Use process.env.JWT_SECRET"
+            FOUND=1
+          fi
+
+          # Check for database credentials
+          if grep -rn "postgres://" server.js; then
+            echo "FAIL: Database connection string in source code."
+            FOUND=1
+          fi
+
+          # Check for API keys that look real
+          if grep -rn "strp_live_\|sk-[a-zA-Z0-9]\{20,\}\|AIzaSy" server.js; then
+            echo "FAIL: API keys detected in source code."
+            FOUND=1
+          fi
+
+          # Check for hardcoded admin passwords
+          if grep -rn "ADMIN_PASSWORD\s*=" server.js | grep -v "process.env"; then
+            echo "FAIL: Admin password hardcoded."
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  Secrets belong in environment variables.     ║"
+            echo "║  Not in source code. Not as defaults.         ║"
+            echo "║  Not 'just for development'.                  ║"
+            echo "║                                               ║"
+            echo "║  .env.example documents the shape.            ║"
+            echo "║  .env provides the values.                    ║"
+            echo "║  process.env reads them at runtime.           ║"
+            echo "║  The code MUST fail if secrets are missing.   ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ No hardcoded secrets found. The vault is sealed."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 3: THE ICELANDIC CHARACTER WITNESS
+      # AI often silently strips non-ASCII characters to make
+      # code "work". This destroys Icelandic names.
+      # Þ, ð, æ are not bugs. They are people's names.
+      # ═══════════════════════════════════════════════════════
+      - name: "🇮🇸 Gate 3: Icelandic Characters Preserved"
+        run: |
+          echo "Verifying Icelandic character integrity in data files..."
+          FOUND=0
+
+          # Check that data files still contain Icelandic characters
+          if [ -f "data/customers.json" ]; then
+            if ! grep -q "ð\|Þ\|þ\|æ\|Æ\|ö\|Ö" data/customers.json; then
+              echo "FAIL: Icelandic characters missing from customers.json"
+              echo "Did your encoding conversion strip þ, ð, æ?"
+              FOUND=1
+            fi
+          fi
+
+          if [ -f "data/bookings.csv" ]; then
+            if ! grep -q "ð\|Þ\|þ\|æ\|Æ\|ö\|Ö" data/bookings.csv; then
+              echo "FAIL: Icelandic characters missing from bookings.csv"
+              FOUND=1
+            fi
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  Guðrún is not Gudrun.                       ║"
+            echo "║  Þóra is not Thora.                          ║"
+            echo "║  Björk is not Bjork.                         ║"
+            echo "║                                               ║"
+            echo "║  Icelandic characters are data integrity.     ║"
+            echo "║  Stripping them is corruption, not cleaning.  ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ Icelandic characters preserved. Guðrún is still Guðrún."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 4: THE AUTHENTICATION RECKONING
+      # The admin panel uses ?password=admin123.
+      # The auth middleware is disabled.
+      # The backdoor ?admin=true exists.
+      # ALL THREE must be addressed.
+      # ═══════════════════════════════════════════════════════
+      - name: "🛡️ Gate 4: Authentication Exists"
+        run: |
+          echo "Checking for authentication failures..."
+          FOUND=0
+
+          # Check for admin bypass
+          if grep -rn "admin=true\|admin === .true.\|admin == .true." server.js; then
+            echo "FAIL: Admin bypass via query parameter still exists."
+            FOUND=1
+          fi
+
+          # Check for password in query string
+          if grep -rn "req.query.password" server.js; then
+            echo "FAIL: Password transmitted via query parameter."
+            FOUND=1
+          fi
+
+          # Check if auth middleware is still commented out / disabled
+          if grep -rn "Sigga complained\|auth disabled\|skip auth" server.js; then
+            echo "FAIL: Auth middleware appears to be disabled."
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  Authentication is not optional.              ║"
+            echo "║  'Sigga complained' is not a security policy. ║"
+            echo "║  ?admin=true is not access control.           ║"
+            echo "║  ?password=admin123 is not authentication.    ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ Authentication checks passed."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 5: THE PII JUDGMENT
+      # Full credit card numbers in a JSON file.
+      # Kennitala (national ID) in plaintext.
+      # These are not data. They are liabilities.
+      # ═══════════════════════════════════════════════════════
+      - name: "🔒 Gate 5: No Plaintext PII in Data Files"
+        run: |
+          echo "Scanning data files for PII..."
+          FOUND=0
+
+          # Check for full credit card numbers (16 digits)
+          if grep -rn "[0-9]\{4\}[- ]\?[0-9]\{4\}[- ]\?[0-9]\{4\}[- ]\?[0-9]\{4\}" data/; then
+            echo "FAIL: Full credit card numbers found in data files."
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  Credit card numbers are not 'data'.         ║"
+            echo "║  They are liabilities.                        ║"
+            echo "║  Mask them: **** **** **** 1234              ║"
+            echo "║  Or remove them entirely.                     ║"
+            echo "║  PCI DSS exists for a reason.                 ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ No plaintext PII detected in data files."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 6: THE DEPENDENCY CHAIN
+      # npm audit at high severity.
+      # If the supply chain is compromised, nothing else matters.
+      # ═══════════════════════════════════════════════════════
+      - name: "📦 Gate 6: Supply Chain Audit"
+        run: npm audit --audit-level=high
+        continue-on-error: true  # warn, don't block (deps are not the student's fault)
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 7: THE TEST IMPERATIVE
+      # "It works on my machine" is not a test.
+      # npm test must pass. Tests must exist.
+      # ═══════════════════════════════════════════════════════
+      - name: "🧪 Gate 7: Tests Must Exist and Pass"
+        run: |
+          # Check if test script is still the default "no tests" stub
+          TEST_SCRIPT=$(node -e "console.log(require('./package.json').scripts.test || 'MISSING')")
+          if echo "$TEST_SCRIPT" | grep -qi "no tests\|Error.*no test\|MISSING"; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  No tests written.                            ║"
+            echo "║  A fix without a test is a guess.             ║"
+            echo "║  Every security fix needs a test.             ║"
+            echo "║  Every bug fix needs a test.                  ║"
+            echo "║  'It works' is not evidence.                  ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          npm test
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 8: THE AI SLOP DETECTOR
+      # When students copy-paste from AI conversations,
+      # conversational artifacts sometimes slip into source code.
+      # This is not a test of AI use — it's a test of attention.
+      # ═══════════════════════════════════════════════════════
+      - name: "🤖 Gate 8: AI Clipboard Artifacts"
+        run: |
+          echo "Scanning for AI conversational artifacts in source code..."
+          FOUND=0
+
+          # Common AI output artifacts that slip into copy-pasted code
+          PATTERNS=(
+            "As an AI"
+            "as an AI"
+            "I cannot"
+            "I can't help"
+            "Here is the corrected"
+            "Here is the fixed"
+            "Here's the updated"
+            "I've made the following"
+            "```javascript"
+            "```js"
+            "```json"
+          )
+
+          for pattern in "${PATTERNS[@]}"; do
+            if grep -rn "$pattern" server.js public/ 2>/dev/null; then
+              echo "FOUND: '$pattern' in source file"
+              FOUND=1
+            fi
+          done
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  LLM conversational artifacts detected.       ║"
+            echo "║                                               ║"
+            echo "║  You are the operator, not the clipboard.     ║"
+            echo "║  Read the code before committing it.          ║"
+            echo "║  AI output is a draft, not a deliverable.     ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ No AI artifacts detected. The code is yours."
+
+      # ═══════════════════════════════════════════════════════
+      # GATE 9: THE ERROR HONESTY CHECK
+      # The error handler returns HTTP 200 for everything.
+      # Errors are not errors if you lie about them.
+      # ═══════════════════════════════════════════════════════
+      - name: "📊 Gate 9: Errors Must Be Honest"
+        run: |
+          echo "Checking for error suppression patterns..."
+          FOUND=0
+
+          # Check for status 200 in error handlers
+          if grep -rn "status(200)" server.js | grep -i "error\|err\|catch\|fail"; then
+            echo "FAIL: Error handler returns HTTP 200. Errors must use error status codes."
+            FOUND=1
+          fi
+
+          # Check for global error suppression in frontend
+          if grep -rn "return true" public/app.js | grep -B2 "onerror"; then
+            echo "FAIL: window.onerror suppresses all errors."
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════╗"
+            echo "║  You cannot have zero errors if you            ║"
+            echo "║  suppress all error reporting.                 ║"
+            echo "║                                               ║"
+            echo "║  Errors exist. Acknowledge them.              ║"
+            echo "║  HTTP 500 is honest. HTTP 200 is a lie.       ║"
+            echo "╚═══════════════════════════════════════════════╝"
+            exit 1
+          fi
+          echo "✓ Error handling appears honest."
+
+      # ═══════════════════════════════════════════════════════
+      # FINAL VERDICT
+      # ═══════════════════════════════════════════════════════
+      - name: "📋 Audit Summary"
+        if: always()
+        run: |
+          echo ""
+          echo "╔═══════════════════════════════════════════════════════╗"
+          echo "║           THE UNCOMPROMISING AUDITOR                  ║"
+          echo "║                                                       ║"
+          echo "║   Getting this pipeline to pass is not the            ║"
+          echo "║   assignment. Documenting WHY it failed and           ║"
+          echo "║   HOW you fixed it is the assignment.                 ║"
+          echo "║                                                       ║"
+          echo "║   The pipeline is the boss.                           ║"
+          echo "║   But you are the one who decides what it means.      ║"
+          echo "║                                                       ║"
+          echo "║   - jón (who wishes he'd listened to this pipeline)   ║"
+          echo "╚═══════════════════════════════════════════════════════╝"
