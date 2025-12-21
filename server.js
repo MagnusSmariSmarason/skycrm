@@ -4,6 +4,13 @@
 // TODO: fix the thing with the bookings
 // TODO: ask Sigga about the whale watching prices
 // TODO: "refactor" lol
+//
+// NOTE TO WHOEVER REPLACES ME:
+// I tried to set up a proper audit pipeline. It's on the ops/legacy-pipeline branch.
+// I couldn't get it to pass because... well, you'll see why.
+// Maybe you'll be braver than I was. Check `git branch -a` if you're curious.
+// Or don't. Ignorance was bliss while it lasted.
+// - jón, 3am, December 21st, 2025
 
 const express = require('express');
 const bodyParser = require('body-parser');
