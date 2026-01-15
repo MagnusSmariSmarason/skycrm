@@ -539,3 +539,4 @@ class BookingEngine {
 // cache
 // more customers
 // bookings semicolon
+// negative price
