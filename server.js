@@ -540,3 +540,4 @@ class BookingEngine {
 // more customers
 // bookings semicolon
 // negative price
+// crash handler
