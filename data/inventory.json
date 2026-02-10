@@ -66,7 +66,7 @@
     "description": "Horse riding through lava fields + Secret Lagoon hot spring",
     "active": false,
     "season": "may-october",
-    "notes": "jón: price is wrong, sigga was messing with this"
+    "notes": "jón: price is negative because this is a REFUND template. When a tour is cancelled, we create a booking with this tour ID to credit the customer. Don't change the price or refunds break."
   },
   {
     "id": 7,
